@@ -1,0 +1,61 @@
+const examples = [
+  { id: 1, title: "Lorem ipsum dolor sit amet" },
+  { id: 2, title: "Consectetur adipiscing elit" },
+  { id: 3, title: "Sed do eiusmod tempor incididunt" },
+  { id: 4, title: "Ut labore et dolore magna aliqua" },
+  { id: 5, title: "Quis nostrud exercitation ullamco" },
+  { id: 6, title: "Laboris nisi ut aliquip ex ea commodo" },
+  { id: 7, title: "Duis aute irure dolor in reprehenderit" },
+  { id: 8, title: "In voluptate velit esse cillum dolore" },
+  { id: 9, title: "Eu fugiat nulla pariatur excepteur sint" },
+  { id: 10, title: "Occaecat cupidatat non proident sunt" },
+];
+const pizzas = [
+  {
+    id: 1,
+    name: "Margherita",
+    image: "/img/pizze/margherita.webp",
+    price: "€ 8.00",
+    avaiable: true,
+    ingredients: ["pomodoro", "mozzarella"],
+  },
+  {
+    id: 2,
+    name: "Marinara",
+    image: "/img/pizze/marinara.jpeg",
+    price: "€ 6.00",
+    avaiable: true,
+    ingredients: ["pomodoro", "aglio", "origano"],
+  },
+  {
+    id: 3,
+    name: "Diavola",
+    image: "/img/pizze/diavola.jpeg",
+    price: "€ 7.00",
+    avaiable: true,
+    ingredients: ["pomodoro", "mozzarella", "salame piccante"],
+  },
+  {
+    id: 4,
+    name: "Bufalina",
+    image: "/img/pizze/bufalina.jpeg",
+    price: "€ 10.00",
+    avaiable: true,
+    ingredients: ["pomodoro", "mozzarella di bufala"],
+  },
+  {
+    id: 5,
+    name: "4 formaggi",
+    image: "/img/pizze/4_formaggi.jpeg",
+    price: "€ 10.00",
+    avaiable: false,
+    ingredients: [
+      "pomodoro",
+      "mozzarella",
+      "gorgonzola",
+      "parmigiano",
+      "ricotta",
+    ],
+  },
+];
+export { pizzas };
