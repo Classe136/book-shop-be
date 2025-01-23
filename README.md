@@ -3,7 +3,7 @@
 ## Step 1 - Scaffolding
 ```bash
 # clone repository
-# add package-lock.json to .gitignore
+# add package-lock.json + .env to .gitignore
 # edit README.md
 
 # create file server.js
@@ -15,7 +15,13 @@ npm init -y
 # create env file
 ni .env
 
-# add in env PORT = 3000
+# add in env PORT = 3000 etc
+PORT=3000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=root
+DB_NAME=books_db
+
 # configure package json with dev and start script (env e watch)
 
 ```
@@ -36,10 +42,13 @@ npm install express
     # per cors
     npm install cors
 ```
-
+```bash
+    # per mysql
+    npm install mysql2
+```
 ```javascript
 // import express in server js
-const express = require("express");
+import express from "express";
 
 // create a server instance
 const app = express();
@@ -49,7 +58,7 @@ const port = process.env.PORT || 3000;
 
 
 // middleware per il CORS
-const cors = require("cors"); 👈
+import cors from "cors"; 👈
 app.use(cors({ 
   origin: 'localhost: http://localhost:5173' 👈
 })); 
@@ -92,15 +101,31 @@ npm run dev
 mkdir routes
 mkdir middlewares
 mkdir controllers
-mkdir classes
-mkdir models
+mk
+```
 
+# create connection create file connection.js
 
-# create models data
- cd models
- ni examples.js
+```javascript
+import mysql from "mysql2";
+
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DATABASE,
+});
+
+connection.connect((err) => {
+  if (err) throw err;
+  console.log("Connected to MySQL Database!");
+});
+
+export default connection;
+```
 
 # make example controller
+```bash
 cd controllers
 ni exampleController.js
 ```
@@ -109,16 +134,17 @@ ni exampleController.js
 - Controller
 
 ```javascript
-// import model  in controller
-const examples = require("../models/examples.js"); 
+// import connection  in controller
+import connection from "../connection.js" 
 
 
 function index(req, res) {  
-  const response = {
-    totalCount: menu.length,
-    data: [...examples],
-  };
-  res.json(response);
+  const sql = "SELECT * FROM `books`";
+  connection.query(sql, (err, results) => {
+    if (err) res.status(500).json({ error: "Errore del server" });
+    //console.log(results);
+    res.json(results);
+  });  
 }
 
 function show(req, res) {
@@ -183,7 +209,7 @@ function destroy(req, res) {
 }
 
 // esporto le funzioni
-module.exports = { index, show, store, update, destroy };
+export { index, show, store, update, destroy };
 
 ```
 - Routes
@@ -197,20 +223,20 @@ module.exports = { index, show, store, update, destroy };
 //in routes/examples.js
 
 // import express
-const express = require("express");
+import express from "express";
 
 //create an instance of router
 const router = express.Router();
 
 
 //importfunction from controller
-const {
+import {
   index,
   show,
   store,
   update,
   destroy,
-} = require("../controllers/exampleController");
+} from "../controllers/exampleController";
 
 //Rotte
 
@@ -235,7 +261,7 @@ router.put("/:id", update);
 router.delete("/:id", destroy);
 
 //esport router
-module.exports = router;
+export default router;
 ```
 ```javascript
 // in server.js
@@ -243,7 +269,7 @@ module.exports = router;
 //Import router
 
 //Imports 
-const examplesRouter = require("./routes/examples");
+import examplesRouter = from "./routes/examples";
 
 // add router middelware to routes
 app.use("/examples", examplesRouter);
@@ -273,7 +299,7 @@ function errorsHandler(err, req, res, next) {
   });
 }
 
-module.exports = errorsHandler;
+export default errorsHandler;
 
 
 // 404 not found example
@@ -282,12 +308,12 @@ function notFound(req, res, next) {
   res.json({ error: "Not Found", message: "Risorsa non trovata" });
 }
 
-module.exports = notFound;
+export default notFound;
 ```
 ```javascript
 // import in server.js
-const errorsHandler = require("./middlewares/errorsHandler");
-const notFound = require("./middlewares/notFound");
+import errorsHandler  from"./middlewares/errorsHandler";
+import notFound from "./middlewares/notFound";
 
 // register middleware as last routes in server.js
 
@@ -319,11 +345,11 @@ class CustomError extends Error {
   }
 }
 
-module.exports = CustomError;
+export default CustomError;
 ```
 ```javascript
 //import class where you need it (example in controller)
-const CustomError = require("../classes/CustomError");
+import CustomError from "../classes/CustomError";
 
 // use 
 throw new CustomError("Questo item non esiste", 404);

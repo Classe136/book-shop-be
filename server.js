@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 });
 
 //other routes
-app.use("/books", booksRouter);
+app.use("/api/books", booksRouter);
 
 // index leggi lista /books metodo get R
 // show leggo un solo libro /books/:id metodo get R

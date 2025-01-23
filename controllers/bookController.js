@@ -1,24 +1,37 @@
-import books from "../models/books.js";
+import connection from "../connection.js";
 import CustomError from "../classes/CustomError.js";
 
 function index(req, res) {
-  const response = {
-    info: {
-      totalCount: books.length,
-    },
-    results: [...books],
-  };
-  res.json(response);
+  const sql = "SELECT * FROM `books`";
+  connection.query(sql, (err, results) => {
+    if (err) res.status(500).json({ error: "Errore del server" });
+    //console.log(results);
+    const response = {
+      count: results.length,
+      items: results,
+    };
+    res.json(response);
+  });
 }
 
 function show(req, res) {
   const id = parseInt(req.params.id);
-  const item = books.find((book) => book.id === id);
-
-  if (!item) {
-    throw new CustomError("L'elemento non esiste", 404);
-  }
-  res.json({ success: true, item });
+  const sql = `SELECT books.*, AVG(reviews.vote) AS vote_average FROM books
+  JOIN reviews ON reviews.book_id = books.id
+  WHERE 	books.id = 2
+  GROUP BY reviews.book_id`;
+  connection.query(sql, [id], (err, results) => {
+    if (err) res.status(500).json({ error: "Errore del server" });
+    const item = results[0];
+    if (!item) res.status(404).json({ error: "Not Found" });
+    const sqlReviews = "SELECT * FROM `reviews` WHERE `book_id` = ?";
+    connection.query(sqlReviews, [id], (err, reviews) => {
+      if (err) res.status(500).json({ error: "Errore del server" });
+      item.reviews = reviews;
+      res.json(item);
+    });
+    //console.log(results[0]);
+  });
 }
 
 function store(req, res) {
@@ -53,13 +66,14 @@ function update(req, res) {
 }
 function destroy(req, res) {
   const id = parseInt(req.params.id);
-  const index = books.findIndex((item) => item.id === id);
-  if (index !== -1) {
-    books.splice(index, 1);
+  const sql = "DELETE FROM `books` WHERE  `id` = ?";
+  connection.query(sql, [id], (err, results) => {
+    if (err) res.status(500).json({ error: "Errore del server" });
+    // const item = results;
+    // console.log(results);
+    // if (!item) res.status(404).json({ error: "Not Found" });
     res.sendStatus(204);
-  } else {
-    throw new CustomError("L'elemento non esiste", 404);
-  }
+  });
 }
 
 export { index, show, store, update, destroy };
