@@ -95,4 +95,4 @@ function destroy(req, res) {
   });
 }
 
-export { index, show, store, update, destroy };
+export { index, show, store, storeReview, update, destroy };
