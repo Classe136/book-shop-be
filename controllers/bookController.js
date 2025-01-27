@@ -18,12 +18,13 @@ function show(req, res) {
   const id = parseInt(req.params.id);
   const sql = `SELECT books.*, AVG(reviews.vote) AS vote_average FROM books
   JOIN reviews ON reviews.book_id = books.id
-  WHERE 	books.id = 2
+  WHERE 	books.id = ?
   GROUP BY reviews.book_id`;
   connection.query(sql, [id], (err, results) => {
     if (err) res.status(500).json({ error: "Errore del server" });
     const item = results[0];
-    if (!item) res.status(404).json({ error: "Not Found" });
+    console.log(results);
+    if (!item) return res.status(404).json({ error: "Not Found" });
     const sqlReviews = "SELECT * FROM `reviews` WHERE `book_id` = ?";
     connection.query(sqlReviews, [id], (err, reviews) => {
       if (err) res.status(500).json({ error: "Errore del server" });
