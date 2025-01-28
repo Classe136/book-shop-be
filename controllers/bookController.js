@@ -23,9 +23,10 @@ function show(req, res) {
   connection.query(sql, [id], (err, results) => {
     if (err) res.status(500).json({ error: "Errore del server" });
     const item = results[0];
-    console.log(results);
+    //console.log(results);
     if (!item) return res.status(404).json({ error: "Not Found" });
-    const sqlReviews = "SELECT * FROM `reviews` WHERE `book_id` = ?";
+    const sqlReviews =
+      "SELECT * FROM `reviews` WHERE `book_id` = ? ORDER BY created_at DESC";
     connection.query(sqlReviews, [id], (err, reviews) => {
       if (err) res.status(500).json({ error: "Errore del server" });
       item.reviews = reviews;
@@ -63,6 +64,7 @@ function storeReview(req, res) {
   //  console.log(fields); // fields contains extra meta data about results, if available
   connection.query(sql, [text, name, vote, id], (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
+    console.log(results);
     res.status(201);
     res.json({ message: "Review added", id: results.insertId });
   });
