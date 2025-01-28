@@ -64,7 +64,7 @@ function storeReview(req, res) {
   //  console.log(fields); // fields contains extra meta data about results, if available
   connection.query(sql, [text, name, vote, id], (err, results) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
-    console.log(results);
+    //console.log(results);
     res.status(201);
     res.json({ message: "Review added", id: results.insertId });
   });
