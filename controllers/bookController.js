@@ -48,8 +48,21 @@ function show(req, res) {
 
 function store(req, res) {
   console.log(req.body);
-  console.log(req.file);
-  res.json({ success: true });
+  console.log(req.file.filename);
+  let image;
+  if (req.file && req.file.filename) {
+    image = req.file.filename;
+  }
+  // Recuperiamo il body
+  const { title, author, abstract } = req.body;
+  const sql =
+    "INSERT INTO books (title, abstract, author, image) VALUES (?, ?, ?, ?)";
+  connection.query(sql, [title, abstract, author, image], (err, results) => {
+    if (err) return res.status(500).json({ error: "Database query failed" });
+    //console.log(results);
+    res.status(201);
+    res.json({ message: "Book added", id: results.insertId });
+  });
 }
 function storeReview(req, res) {
   // Recuperiamo l'id
