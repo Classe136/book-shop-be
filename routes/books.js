@@ -1,4 +1,19 @@
 import express from "express";
+import * as multer from "multer";
+// console.log(multer);
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./public/img/books/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now();
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const upload = multer.default({ storage: storage });
+//const upload = multer.default({ dest: "./public/img/books/" });
+
 const router = express.Router();
 
 import {
@@ -18,7 +33,7 @@ router.get("/", index);
 router.get("/:id", show);
 
 //Store - Create
-router.post("/", store);
+router.post("/", upload.single("image"), store);
 
 // Store - create review
 router.post("/:id/reviews", storeReview);

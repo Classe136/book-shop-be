@@ -47,16 +47,9 @@ function show(req, res) {
 }
 
 function store(req, res) {
-  let newId = 0;
-  for (let i = 0; i < books.length; i++) {
-    if (books[i].id > newId) {
-      newId = books[i].id;
-    }
-  }
-  newId += 1;
-  const newBook = { id: newId, ...req.body };
-  books.push(newBook);
-  res.json({ success: true, item: newBook });
+  console.log(req.body);
+  console.log(req.file);
+  res.json({ success: true });
 }
 function storeReview(req, res) {
   // Recuperiamo l'id
